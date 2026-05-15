@@ -1,68 +1,115 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora UPSJB</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
     <div class="app-container">
         <header>
             <h1>Calculadora de Notas UPSJB</h1>
             <p>Simulador de Rendimiento Académico</p>
         </header>
-
+        <div class="save-control">
+            <div class="save-info">
+                <strong>Guardado automático</strong>
+                <p>Las notas se guardarán en este dispositivo</p>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="autoSaveToggle" onchange="toggleSave()">
+                <span class="slider"></span>
+            </label>
+        </div>
         <main class="grid-inputs" oninput="calcular()">
+
             <div class="card">
                 <div class="card-header">
                     <span>PC 1 <small>(15%)</small></span>
                     <button class="btn-plus" onclick="toggleSub(this)">+</button>
                 </div>
-                <input type="number" class="nota main-input" data-peso="0.15" placeholder="0.0" oninput="validar20(this)">
+                <input type="number" class="nota main-input" data-peso="0.15" placeholder="0.0"
+                    oninput="validar20(this)">
                 <div class="sub-panel" style="display: none;">
                     <div class="sub-grid">
-                        <input type="number" class="sub-input" placeholder="Ex1" oninput="validar20(this); actualizarPC(this)">
-                        <input type="number" class="sub-input" placeholder="Ex2" oninput="validar20(this); actualizarPC(this)">
-                        <input type="number" class="sub-input" placeholder="Act1" oninput="validar20(this); actualizarPC(this)">
-                        <input type="number" class="sub-input" placeholder="Act2" oninput="validar20(this); actualizarPC(this)">
+                        <input type="number" class="sub-input" placeholder="Ex1"
+                            oninput="validar20(this); actualizarPC(this)">
+                        <input type="number" class="sub-input" placeholder="Ex2"
+                            oninput="validar20(this); actualizarPC(this)">
+                        <input type="number" class="sub-input" placeholder="Act1"
+                            oninput="validar20(this); actualizarPC(this)">
+                        <input type="number" class="sub-input" placeholder="Act2"
+                            oninput="validar20(this); actualizarPC(this)">
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <div class="card-header"><span>PC 2 <small>(15%)</small></span><button class="btn-plus" onclick="toggleSub(this)">+</button></div>
-                <input type="number" class="nota main-input" data-peso="0.15" placeholder="0.0" oninput="validar20(this)">
-                <div class="sub-panel" style="display: none;"><div class="sub-grid">
-                    <input type="number" class="sub-input" placeholder="Ex1" oninput="validar20(this); actualizarPC(this)"><input type="number" class="sub-input" placeholder="Ex2" oninput="validar20(this); actualizarPC(this)"><input type="number" class="sub-input" placeholder="Act1" oninput="validar20(this); actualizarPC(this)"><input type="number" class="sub-input" placeholder="Act2" oninput="validar20(this); actualizarPC(this)">
-                </div></div>
+                <div class="card-header"><span>PC 2 <small>(15%)</small></span><button class="btn-plus"
+                        onclick="toggleSub(this)">+</button></div>
+                <input type="number" class="nota main-input" data-peso="0.15" placeholder="0.0"
+                    oninput="validar20(this)">
+                <div class="sub-panel" style="display: none;">
+                    <div class="sub-grid">
+                        <input type="number" class="sub-input" placeholder="Ex1"
+                            oninput="validar20(this); actualizarPC(this)"><input type="number" class="sub-input"
+                            placeholder="Ex2" oninput="validar20(this); actualizarPC(this)"><input type="number"
+                            class="sub-input" placeholder="Act1" oninput="validar20(this); actualizarPC(this)"><input
+                            type="number" class="sub-input" placeholder="Act2"
+                            oninput="validar20(this); actualizarPC(this)">
+                    </div>
+                </div>
             </div>
 
             <div class="card">
-                <div class="card-header"><span>PC 3 <small>(15%)</small></span><button class="btn-plus" onclick="toggleSub(this)">+</button></div>
-                <input type="number" class="nota main-input" data-peso="0.15" placeholder="0.0" oninput="validar20(this)">
-                <div class="sub-panel" style="display: none;"><div class="sub-grid">
-                    <input type="number" class="sub-input" placeholder="Ex1" oninput="validar20(this); actualizarPC(this)"><input type="number" class="sub-input" placeholder="Ex2" oninput="validar20(this); actualizarPC(this)"><input type="number" class="sub-input" placeholder="Act1" oninput="validar20(this); actualizarPC(this)"><input type="number" class="sub-input" placeholder="Act2" oninput="validar20(this); actualizarPC(this)">
-                </div></div>
+                <div class="card-header"><span>PC 3 <small>(15%)</small></span><button class="btn-plus"
+                        onclick="toggleSub(this)">+</button></div>
+                <input type="number" class="nota main-input" data-peso="0.15" placeholder="0.0"
+                    oninput="validar20(this)">
+                <div class="sub-panel" style="display: none;">
+                    <div class="sub-grid">
+                        <input type="number" class="sub-input" placeholder="Ex1"
+                            oninput="validar20(this); actualizarPC(this)"><input type="number" class="sub-input"
+                            placeholder="Ex2" oninput="validar20(this); actualizarPC(this)"><input type="number"
+                            class="sub-input" placeholder="Act1" oninput="validar20(this); actualizarPC(this)"><input
+                            type="number" class="sub-input" placeholder="Act2"
+                            oninput="validar20(this); actualizarPC(this)">
+                    </div>
+                </div>
             </div>
 
             <div class="card">
-                <div class="card-header"><span>PC 4 <small>(15%)</small></span><button class="btn-plus" onclick="toggleSub(this)">+</button></div>
-                <input type="number" class="nota main-input" data-peso="0.15" placeholder="0.0" oninput="validar20(this)">
-                <div class="sub-panel" style="display: none;"><div class="sub-grid">
-                    <input type="number" class="sub-input" placeholder="Ex1" oninput="validar20(this); actualizarPC(this)"><input type="number" class="sub-input" placeholder="Ex2" oninput="validar20(this); actualizarPC(this)"><input type="number" class="sub-input" placeholder="Act1" oninput="validar20(this); actualizarPC(this)"><input type="number" class="sub-input" placeholder="Act2" oninput="validar20(this); actualizarPC(this)">
-                </div></div>
+                <div class="card-header"><span>PC 4 <small>(15%)</small></span><button class="btn-plus"
+                        onclick="toggleSub(this)">+</button></div>
+                <input type="number" class="nota main-input" data-peso="0.15" placeholder="0.0"
+                    oninput="validar20(this)">
+                <div class="sub-panel" style="display: none;">
+                    <div class="sub-grid">
+                        <input type="number" class="sub-input" placeholder="Ex1"
+                            oninput="validar20(this); actualizarPC(this)"><input type="number" class="sub-input"
+                            placeholder="Ex2" oninput="validar20(this); actualizarPC(this)"><input type="number"
+                            class="sub-input" placeholder="Act1" oninput="validar20(this); actualizarPC(this)"><input
+                            type="number" class="sub-input" placeholder="Act2"
+                            oninput="validar20(this); actualizarPC(this)">
+                    </div>
+                </div>
             </div>
 
             <div class="card exam">
                 <div class="card-header"><span>PARCIAL <small>(20%)</small></span></div>
-                <input type="number" class="nota main-input" data-peso="0.20" placeholder="0.0" oninput="validar20(this)">
+                <input type="number" class="nota main-input" data-peso="0.20" placeholder="0.0"
+                    oninput="validar20(this)">
             </div>
 
             <div class="card exam">
                 <div class="card-header"><span>FINAL <small>(20%)</small></span></div>
-                <input type="number" id="notaFinal" class="nota main-input" data-peso="0.20" placeholder="0.0" oninput="validar20(this)">
+                <input type="number" id="notaFinal" class="nota main-input" data-peso="0.20" placeholder="0.0"
+                    oninput="validar20(this)">
             </div>
         </main>
 
@@ -78,4 +125,5 @@
     </div>
     <script src="script.js"></script>
 </body>
+
 </html>
