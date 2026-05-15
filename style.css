@@ -292,3 +292,66 @@ input:checked+.slider:before {
     transform: translateX(20px);
 }
 
+/* --- AJUSTES PARA CELULAR --- */
+@media (max-width: 480px) {
+    .app-container {
+        padding: 1.5rem; /* Menos espacio interno para ganar pantalla */
+        border-radius: 20px;
+    }
+
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    /* Las notas ahora se ven una debajo de otra para mayor comodidad */
+    .grid-inputs {
+        grid-template-columns: 1fr; 
+        gap: 12px;
+    }
+
+    .card {
+        padding: 12px;
+    }
+
+    .main-input {
+        font-size: 1.5rem; /* Números más grandes para el dedo */
+        padding: 15px;
+    }
+
+    /* El bloque de guardado automático */
+    .save-control {
+        flex-direction: row;
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+
+    .save-info strong {
+        font-size: 0.85rem;
+    }
+
+    .save-info p {
+        font-size: 0.7rem;
+        max-width: 180px; /* Evita que el texto choque con el switch */
+    }
+
+    /* Los botones de abajo más grandes para tocarlos fácil */
+    .btn-main {
+        padding: 18px;
+        font-size: 1.1rem;
+    }
+
+    footer {
+        padding: 15px;
+    }
+
+    .promedio-val {
+        font-size: 2rem;
+    }
+}
+
+/* Toque extra para que los botones de PC no se vean pegados al borde */
+.card-header span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
