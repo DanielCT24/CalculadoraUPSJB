@@ -1,9 +1,62 @@
-// Validación para no exceder 20
+// Carga inicial al abrir la página
+window.onload = function() {
+    const isSaveEnabled = localStorage.getItem('autoSaveEnabled') === 'true';
+    const toggle = document.getElementById('autoSaveToggle');
+    if (toggle) toggle.checked = isSaveEnabled;
+    
+    if (isSaveEnabled) {
+        cargarNotas();
+    }
+};
+
+// --- FUNCIONES DE GUARDADO ---
+
+function toggleSave() {
+    const isChecked = document.getElementById('autoSaveToggle').checked;
+    localStorage.setItem('autoSaveEnabled', isChecked);
+    if (isChecked) {
+        guardarNotas();
+    } else {
+        localStorage.removeItem('notasGuardadas');
+    }
+}
+
+function guardarNotas() {
+    const notas = {};
+    // Guardamos tanto notas principales como sub-notas
+    document.querySelectorAll('input[type="number"]').forEach((input, index) => {
+        notas[index] = {
+            value: input.value,
+            isPredicted: input.classList.contains('is-predicted')
+        };
+    });
+    localStorage.setItem('notasGuardadas', JSON.stringify(notas));
+}
+
+function cargarNotas() {
+    const data = JSON.parse(localStorage.getItem('notasGuardadas'));
+    if (data) {
+        document.querySelectorAll('input[type="number"]').forEach((input, index) => {
+            if (data[index]) {
+                input.value = data[index].value;
+                if (data[index].isPredicted) {
+                    input.classList.add('is-predicted');
+                }
+            }
+        });
+        calcular();
+    }
+}
+
+// --- TUS FUNCIONES ORIGINALES (INTEGRADAS) ---
+
 function validar20(input) {
     if (parseFloat(input.value) > 20) input.value = 20;
     if (parseFloat(input.value) < 0) input.value = 0;
-    // Si el usuario escribe manualmente, quitamos la marca de "predicho"
     input.classList.remove('is-predicted');
+    
+    // Auto-guardado si está activo
+    if (localStorage.getItem('autoSaveEnabled') === 'true') guardarNotas();
 }
 
 function calcular() {
@@ -37,13 +90,15 @@ function calcular() {
         promedioTexto.parentElement.style.color = "#ef4444";
         mensaje.innerText = "Nota insuficiente";
     }
+
+    // Auto-guardado si está activo
+    if (localStorage.getItem('autoSaveEnabled') === 'true') guardarNotas();
 }
 
 function toggleSub(btn) {
     const panel = btn.closest('.card').querySelector('.sub-panel');
     const isOpening = panel.style.display === "none";
     
-    // Opcional: Cerrar otros paneles abiertos antes de abrir este
     document.querySelectorAll('.sub-panel').forEach(p => p.style.display = "none");
     document.querySelectorAll('.btn-plus').forEach(b => b.innerText = "+");
 
@@ -51,7 +106,6 @@ function toggleSub(btn) {
     btn.innerText = isOpening ? "-" : "+";
 }
 
-// NUEVA FUNCIÓN: Cerrar al hacer clic afuera
 document.addEventListener('click', function(event) {
     const cards = document.querySelectorAll('.card');
     let clicInsideCard = false;
@@ -74,7 +128,6 @@ function actualizarPC(sub) {
     subs.forEach(i => { if(i.value !== "") { s += parseFloat(i.value); c++; }});
     main.value = c > 0 ? (s/c).toFixed(2) : "";
     
-    // Al actualizar por desglose, el valor principal no es predicho
     main.classList.remove('is-predicted');
     calcular();
 }
@@ -87,15 +140,13 @@ function predecirNotas() {
 
     inputs.forEach(input => {
         let peso = parseFloat(input.dataset.peso);
-        // Ahora consideramos "Fijo" lo que tenga valor Y NO tenga la clase 'is-predicted'
         if (input.value !== "" && !input.classList.contains('is-predicted')) {
             sumaFija += parseFloat(input.value) * peso;
         } else {
             camposParaRellenar.push({ input, peso });
             pesoFaltanteTotal += peso;
-            // Limpiamos el valor viejo para re-calcular
             input.value = "";
-            input.classList.add('is-predicted'); // Marcamos como campo que el sistema va a llenar
+            input.classList.add('is-predicted');
         }
     });
 
@@ -150,5 +201,8 @@ function limpiarDatos() {
     });
     document.querySelectorAll('.sub-panel').forEach(p => p.style.display = "none");
     document.querySelectorAll('.btn-plus').forEach(b => b.innerText = "+");
+    
+    // Limpiar storage si existe
+    localStorage.removeItem('notasGuardadas');
     calcular();
 }
