@@ -41,6 +41,7 @@ function cargarNotas() {
                 input.value = data[index].value;
                 if (data[index].isPredicted) {
                     input.classList.add('is-predicted');
+                    input.style.color = "#ef4444"; // Mantiene el color rojo al cargar si era predicha
                 }
             }
         });
@@ -54,6 +55,7 @@ function validar20(input) {
     if (parseFloat(input.value) > 20) input.value = 20;
     if (parseFloat(input.value) < 0) input.value = 0;
     input.classList.remove('is-predicted');
+    input.style.color = ""; // Limpia el color rojo si el usuario modifica la nota manualmente
     
     // Auto-guardado si está activo
     if (localStorage.getItem('autoSaveEnabled') === 'true') guardarNotas();
@@ -129,6 +131,7 @@ function actualizarPC(sub) {
     main.value = c > 0 ? (s/c).toFixed(2) : "";
     
     main.classList.remove('is-predicted');
+    main.style.color = ""; // Limpia el color rojo si se calcula a través de sub-notas
     calcular();
 }
 
@@ -147,6 +150,7 @@ function predecirNotas() {
             pesoFaltanteTotal += peso;
             input.value = "";
             input.classList.add('is-predicted');
+            input.style.color = "#ef4444"; // Pinta el texto de la nota predicha en ROJO
         }
     });
 
@@ -198,6 +202,7 @@ function limpiarDatos() {
     document.querySelectorAll('input').forEach(i => {
         i.value = "";
         i.classList.remove('is-predicted');
+        i.style.color = ""; // Limpia por completo el color rojo de todos los campos
     });
     document.querySelectorAll('.sub-panel').forEach(p => p.style.display = "none");
     document.querySelectorAll('.btn-plus').forEach(b => b.innerText = "+");
