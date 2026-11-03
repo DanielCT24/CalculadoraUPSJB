@@ -2,97 +2,299 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portal Académico | Medicina Humana</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Portal Académico</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg-main:#0a0607;--card-bg:#120b0d;--surface:#180e11;--surface-input:#0f0709;--border-subtle:#2a151b;--border-focus:#e11d48;--text-pure:#ffffff;--text-mid:#cbd5e1;--text-muted:#88656d;--red-crimson:#e11d48;--red-deep:#be123c;--red-glow:rgba(225,29,72,0.15);--green:#10b981;--amber:#f59e0b;--font-main:'Plus Jakarta Sans',system-ui,sans-serif;--font-mono:'JetBrains Mono',monospace;--radius:10px}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:var(--font-main);-webkit-tap-highlight-color:transparent}
+    body{background-color:var(--bg-main);background-image:radial-gradient(at 0% 0%,rgba(190,18,60,0.12) 0px,transparent 45%),radial-gradient(at 100% 100%,rgba(225,29,72,0.06) 0px,transparent 40%);background-attachment:fixed;color:var(--text-mid);min-height:100vh;padding:1.5rem 1rem 3rem}
+    .app-container{max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:1.25rem}
+    .app-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+    .brand h1{font-size:1.35rem;font-weight:800;letter-spacing:-0.02em;color:var(--text-pure)}
+    .metrics-bar{display:flex;gap:0.65rem;flex-wrap:wrap;width:100%}
+    @media (min-width:600px){.metrics-bar{width:auto}}
+    .metric-box{background:var(--card-bg);border:1px solid var(--border-subtle);border-radius:var(--radius);padding:0.55rem 0.9rem;display:flex;align-items:center;justify-content:space-between;gap:0.65rem;flex:1}
+    .metric-box.highlight{border-color:rgba(225,29,72,0.35);background:linear-gradient(180deg,#160c0f 0%,#1f0d12 100%);box-shadow:0 4px 18px rgba(225,29,72,0.1)}
+    .m-tag{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.05em;font-weight:700;color:var(--text-muted)}
+    .m-val{font-size:1.3rem;font-weight:800;font-family:var(--font-mono);color:var(--text-pure)}
+    .metric-box.highlight .m-val{color:#ff4d6d}
+    .merit-badge{font-size:0.65rem;font-weight:700;padding:0.18rem 0.5rem;border-radius:4px;background:rgba(225,29,72,0.12);color:#fb7185;border:1px solid rgba(225,29,72,0.25);white-space:nowrap}
+    .paste-zone{display:flex;flex-direction:column;gap:0.65rem;background:var(--card-bg);border:1px solid var(--border-subtle);border-radius:var(--radius);padding:0.75rem}
+    @media (min-width:600px){.paste-zone{flex-direction:row;padding:0.75rem 1rem;align-items:center}}
+    .paste-zone textarea{width:100%;background:var(--surface-input);border:1px solid var(--border-subtle);border-radius:6px;color:var(--text-pure);padding:0.6rem 0.75rem;font-size:0.85rem;resize:vertical;outline:none;min-height:44px}
+    .paste-zone textarea:focus{border-color:var(--border-focus)}
+    .cycle-strip{display:flex;align-items:center;gap:0.75rem;padding:0.5rem 0;border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle)}
+    .cycle-strip label{font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em}
+    .cycle-strip select{flex:1;max-width:240px;background:var(--card-bg);border:1px solid var(--border-subtle);color:var(--text-pure);padding:0.5rem 0.85rem;border-radius:6px;font-size:0.88rem;font-weight:600;outline:none;cursor:pointer}
+    .courses-flow{display:flex;flex-direction:column;gap:1.15rem}
+    .course-card{background:var(--card-bg);border:1px solid var(--border-subtle);border-radius:var(--radius);padding:1rem;display:flex;flex-direction:column;gap:1rem;transition:all 0.2s}
+    @media (min-width:600px){.course-card{padding:1.2rem 1.4rem;gap:1.15rem}}
+    .course-card.flash-success{animation:_fx 1.5s ease-out}
+    @keyframes _fx{0%{border-color:var(--green);box-shadow:0 0 20px rgba(16,185,129,0.3)}100%{border-color:var(--border-subtle);box-shadow:none}}
+    .course-head{display:flex;justify-content:space-between;align-items:flex-start;gap:0.5rem}
+    .course-head h2{font-size:0.95rem;font-weight:700;color:var(--text-pure);line-height:1.35}
+    @media (min-width:600px){.course-head h2{font-size:1.05rem}}
+    .cr-tag{font-size:0.68rem;font-family:var(--font-mono);font-weight:700;padding:0.15rem 0.45rem;border-radius:4px;background:var(--surface);border:1px solid var(--border-subtle);color:var(--text-muted);white-space:nowrap}
+    .cr-tag.heavy{background:var(--red-glow);border-color:rgba(225,29,72,0.3);color:#fb7185}
+    .eval-strip{display:grid;grid-template-columns:repeat(2,1fr);gap:0.5rem}
+    @media (min-width:500px){.eval-strip{grid-template-columns:repeat(3,1fr)}}
+    @media (min-width:780px){.eval-strip{grid-template-columns:repeat(6,1fr);gap:0.55rem}}
+    .eval-cell{background:var(--surface);border:1px solid var(--border-subtle);border-radius:8px;padding:0.5rem 0.35rem;display:flex;flex-direction:column;align-items:center}
+    .eval-cell.is-exam{border-color:rgba(225,29,72,0.25);background:#190b0e}
+    .cell-top{width:100%;display:flex;justify-content:space-between;align-items:center;padding:0 0.25rem 0.15rem;min-height:22px}
+    .cell-label{font-size:0.72rem;font-weight:700;color:var(--text-pure)}
+    .btn-plus{background:transparent;border:1px solid var(--border-subtle);color:var(--text-muted);width:22px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;cursor:pointer}
+    .btn-plus:hover{border-color:var(--red-crimson);color:#fff}
+    .btn-plus.has-sub{border-color:var(--red-crimson);background:var(--red-glow);color:#ff4d6d}
+    .cell-weight{font-size:0.65rem;color:var(--text-muted);margin-bottom:0.25rem}
+    .eval-cell input{width:90%;background:var(--surface-input);border:1px solid var(--border-subtle);border-radius:6px;color:var(--text-pure);font-size:1.05rem;font-weight:700;font-family:var(--font-mono);text-align:center;padding:0.35rem 0;outline:none}
+    .eval-cell input:focus{border-color:var(--border-focus)}
+    .eval-cell input.derived{border-color:rgba(225,29,72,0.4);color:#ff4d6d}
+    .cell-hint{font-size:0.65rem;margin-top:0.3rem;min-height:14px;color:var(--text-muted);text-align:center}
+    .cell-hint.projected{color:#fb7185;font-weight:600}
+    .course-foot{background:var(--surface);border-radius:8px;padding:0.75rem 0.9rem;display:flex;flex-direction:column;gap:0.75rem;border-left:3px solid var(--red-crimson)}
+    @media (min-width:600px){.course-foot{flex-direction:row;justify-content:space-between;align-items:center;padding:0.75rem 1.1rem;gap:1rem}}
+    .score-stats{display:flex;justify-content:space-between;gap:1.25rem}
+    .stat-unit{display:flex;flex-direction:column}
+    .stat-tag{font-size:0.62rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);font-weight:700}
+    .stat-num{font-size:1.18rem;font-weight:800;font-family:var(--font-mono);color:var(--text-pure)}
+    .round-pill{font-size:0.68rem;padding:0.15rem 0.4rem;border-radius:4px;background:rgba(16,185,129,0.12);color:var(--green);margin-left:0.35rem;font-family:var(--font-main);font-weight:700}
+    .prediction-indicator{font-size:0.82rem;font-weight:600}
+    @media (min-width:600px){.prediction-indicator{text-align:right}}
+    .st-pass{color:var(--green)}.st-warn{color:var(--amber)}.st-fail{color:#f87171}
+    .btn{padding:0.6rem 1rem;border-radius:6px;font-size:0.85rem;font-weight:600;cursor:pointer;border:1px solid transparent;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}
+    .btn-ghost{background:transparent;border-color:var(--border-subtle);color:var(--text-mid)}
+    .btn-red{background:var(--red-crimson);color:#fff}
+    .btn-red:hover{background:var(--red-deep)}
+    .modal-layer{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:1000;padding:1rem}
+    .modal-layer.is-open{display:flex}
+    .modal-card{background:var(--card-bg);border:1px solid var(--border-subtle);border-radius:var(--radius);padding:1.25rem;max-width:380px;width:100%;display:flex;flex-direction:column;gap:0.9rem}
+    .modal-top{display:flex;justify-content:space-between;align-items:flex-start}
+    .modal-top h3{font-size:1rem;font-weight:700;color:var(--text-pure)}
+    .modal-sub{font-size:0.75rem;color:#fb7185}
+    .modal-x{background:transparent;border:none;color:var(--text-muted);font-size:1.5rem;cursor:pointer;line-height:1}
+    .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem}
+    .field{display:flex;flex-direction:column;gap:0.25rem}
+    .field label{font-size:0.7rem;color:var(--text-muted);font-weight:600}
+    .field input{background:var(--surface-input);border:1px solid var(--border-subtle);border-radius:6px;color:var(--text-pure);padding:0.5rem;font-size:1rem;font-family:var(--font-mono);text-align:center;outline:none}
+    .field input:focus{border-color:var(--border-focus)}
+    .modal-result{display:flex;justify-content:space-between;align-items:center;background:var(--surface);padding:0.6rem 0.85rem;border-radius:6px;font-size:0.85rem}
+    .modal-result strong{font-family:var(--font-mono);color:#ff4d6d;font-size:1.15rem}
+    .modal-actions{display:flex;justify-content:flex-end;gap:0.5rem}
+  </style>
 </head>
 <body>
-
   <div class="app-container">
     <header class="app-header">
-      <div class="brand">
-        <h1>Predictor Académico</h1>
-      </div>
-
+      <div class="brand"><h1>Predictor Académico</h1></div>
       <div class="metrics-bar">
-        <div class="metric-box">
-          <span class="m-tag">Ciclo Activo</span>
-          <span class="m-val" id="kpiCurrentAvg">--</span>
-          <span class="merit-badge" id="kpiCurrentMerit">--</span>
-        </div>
-        <div class="metric-box highlight">
-          <span class="m-tag">Histórico</span>
-          <span class="m-val" id="kpiHistAvg">--</span>
-          <span class="merit-badge" id="kpiHistMerit">--</span>
-        </div>
+        <div class="metric-box"><span class="m-tag">Ciclo Activo</span><span class="m-val" id="kpiCurrentAvg">--</span><span class="merit-badge" id="kpiCurrentMerit">--</span></div>
+        <div class="metric-box highlight"><span class="m-tag">Histórico</span><span class="m-val" id="kpiHistAvg">--</span><span class="merit-badge" id="kpiHistMerit">--</span></div>
       </div>
     </header>
-
-    <!-- Zona de Pegado Directo de Texto de Intranet -->
     <section class="paste-zone">
-      <textarea 
-        id="rawPasteInput" 
-        rows="2" 
-        placeholder="Pega aquí el texto copiado de tu intranet (ej. BASES MOLECULARES... PC1... EP...)"
-      ></textarea>
-      <button class="btn btn-red" onclick="processPastedText()">Importar Notas</button>
+      <textarea id="rawPasteInput" rows="2" placeholder="Pega aquí el texto copiado de la intranet (ej. BASES MOLECULARES... PC1... EP...)"></textarea>
+      <button class="btn btn-red" onclick="_0x0f4a()">Importar Notas</button>
     </section>
-
-    <!-- Barra de Selección de Ciclo -->
-    <div class="cycle-strip">
-      <label for="cycleSelect">Ciclo</label>
-      <select id="cycleSelect"></select>
-    </div>
-
-    <!-- Lista de Asignaturas -->
+    <div class="cycle-strip"><label for="cycleSelect">Ciclo</label><select id="cycleSelect"></select></div>
     <main id="coursesList" class="courses-flow"></main>
   </div>
-
-  <!-- Modal Desglose PCs (+) -->
   <div class="modal-layer" id="subgradeModal">
     <div class="modal-card">
-      <div class="modal-top">
-        <div>
-          <h3 id="modalEvalTitle">Desglose</h3>
-          <span class="modal-sub" id="modalCourseTitle"></span>
-        </div>
-        <button class="modal-x" onclick="closeSubgradeModal()">&times;</button>
-      </div>
-
+      <div class="modal-top"><div><h3 id="modalEvalTitle">Desglose</h3><span class="modal-sub" id="modalCourseTitle"></span></div><button class="modal-x" onclick="_0x9d7a()">&times;</button></div>
       <div class="modal-grid">
-        <div class="field">
-          <label>Examen 1</label>
-          <input type="number" id="subE1" min="0" max="20" step="0.1" placeholder="--" oninput="validateScale(this)">
-        </div>
-        <div class="field">
-          <label>Examen 2</label>
-          <input type="number" id="subE2" min="0" max="20" step="0.1" placeholder="--" oninput="validateScale(this)">
-        </div>
-        <div class="field">
-          <label>Actividad 1</label>
-          <input type="number" id="subA1" min="0" max="20" step="0.1" placeholder="--" oninput="validateScale(this)">
-        </div>
-        <div class="field">
-          <label>Actividad 2</label>
-          <input type="number" id="subA2" min="0" max="20" step="0.1" placeholder="--" oninput="validateScale(this)">
-        </div>
+        <div class="field"><label>Examen 1</label><input type="number" id="subE1" min="0" max="20" step="0.1" placeholder="--" oninput="_0x7f2b(this)"></div>
+        <div class="field"><label>Examen 2</label><input type="number" id="subE2" min="0" max="20" step="0.1" placeholder="--" oninput="_0x7f2b(this)"></div>
+        <div class="field"><label>Actividad 1</label><input type="number" id="subA1" min="0" max="20" step="0.1" placeholder="--" oninput="_0x7f2b(this)"></div>
+        <div class="field"><label>Actividad 2</label><input type="number" id="subA2" min="0" max="20" step="0.1" placeholder="--" oninput="_0x7f2b(this)"></div>
       </div>
-
-      <div class="modal-result">
-        <span>Promedio:</span>
-        <strong id="modalCalculatedAvg">--</strong>
-      </div>
-
-      <div class="modal-actions">
-        <button class="btn btn-ghost" onclick="clearSubgrades()">Limpiar</button>
-        <button class="btn btn-red" onclick="saveSubgrades()">Aplicar</button>
-      </div>
+      <div class="modal-result"><span>Promedio:</span><strong id="modalCalculatedAvg">--</strong></div>
+      <div class="modal-actions"><button class="btn btn-ghost" onclick="_0x3f9e()">Limpiar</button><button class="btn btn-red" onclick="_0x6d4b()">Aplicar</button></div>
     </div>
   </div>
-
-  <script src="app.js"></script>
+  <script>
+    (function(){
+      var _0x1a = ["Ciclo I","Ciclo II","Ciclo III","Ciclo IV","Ciclo V","Ciclo VI","Ciclo VII","Ciclo VIII","Ciclo IX","Ciclo X","Ciclo XI","Ciclo XII","Ciclo XIII (Internado)","Ciclo XIV (Internado)"];
+      var _0x2b = {
+        "Ciclo I": [["Bases Moleculares y Celulares de la Medicina I",5],["Vida Universitaria y Gestión del Conocimiento",3],["Lógico-Matemática",3],["Redacción e Interpretación de Textos",3],["Historia de la Medicina y Quechua Médico",2],["Tecnologías de la Información, Comunicación, Conocimiento y Aprendizaje Digital (TICCAD)",2]],
+        "Ciclo II": [["Estructura y Función de los Sistemas del Cuerpo Humano I",4],["Bases Moleculares y Celulares de la Medicina II",3],["Comunicación y Medios Digitales",3],["Realidad Nacional",3],["Filosofía",3],["Inglés I",3]],
+        "Ciclo III": [["Estructura y Función de los Sistemas del Cuerpo Humano II",6],["Bases Moleculares y Celulares de la Medicina III",5],["Interculturalidad",3],["Pensamiento Crítico, Creativo y Emprendimiento",3],["Bioética",2],["Inglés II",2]],
+        "Ciclo IV": [["Estructura y Funciones de los Sistemas del Cuerpo Humano III",7],["Microbiología y Parasitología Médica",5],["Ciudadanía Global y Desarrollo Sostenible",3],["Inmunología",2],["Medicina Conductual",2]],
+        "Ciclo V": [["Integradora - Fisiopatología",6],["Terapéutica y Cuidados Paliativos",4],["Patología General",4],["Salud Comunitaria",3],["Sistematización y Métodos Estadísticos",2],["Electivo 1",2]],
+        "Ciclo VI": [["Introducción a la Clínica",9],["Patología Clínica e Imagenología",5],["Epidemiología",3],["Metodología de la Investigación",3],["Simulación I (Procedimientos Invasivos Básicos)",2]],
+        "Ciclo VII": [["Clínica y Terapéutica en Medicina I",9],["Genética Médica",3],["Simulación II (Reanimación Cardiopulmonar Básico)",2],["Redacción y Publicación de Artículos I",2],["Electivo 2",2]],
+        "Ciclo VIII": [["Clínica y Terapéutica en Medicina II",9],["Medicina Intercultural",3],["Ética y Profesionalismo",3],["Simulación III (Procedimientos Invasivos Avanzados)",2],["Electivo 3",2]],
+        "Ciclo IX": [["Clínica y Terapéutica en Cirugía I",9],["Atención del Paciente en Salud Mental",4],["Gestión Estratégica y Emprendimiento en Servicios de Salud",4],["Seminario de Ciencias Básicas Aplicadas a la Clínica I",3],["Redacción y Publicación de Artículos II",2]],
+        "Ciclo X": [["Clínica y Terapéutica en Cirugía II",9],["Atención del Paciente Oncológico",4],["Seminario de Ciencias Básicas Aplicadas a la Clínica II",3],["Medicina Legal",2],["Taller Guía de Proyecto de Tesis",2]],
+        "Ciclo XI": [["Clínica y Terapéutica en Gineco-Obstetricia",9],["Externado en Primer Nivel de Atención I",5],["Atención Integral e Integrada en Salud",3],["Seminario Integrador I",2],["Taller Guía de Tesis",2]],
+        "Ciclo XII": [["Clínica y Terapéutica en Pediatría",9],["Externado en Primer Nivel de Atención II",5],["Seminario Integrador II",2],["Electivo 4",2]],
+        "Ciclo XIII (Internado)": [["Primera Rotación de Internado",10],["Segunda Rotación de Internado",10],["Seminario Integrador III",2]],
+        "Ciclo XIV (Internado)": [["Tercera Rotación de Internado",10],["Cuarta Rotación de Internado",10],["Trabajo de Investigación",2]]
+      };
+      var _0x3c = [{id:'pc1',l:'PC 1',w:0.15,b:true},{id:'pc2',l:'PC 2',w:0.15,b:true},{id:'pc3',l:'PC 3',w:0.15,b:true},{id:'pc4',l:'PC 4',w:0.15,b:true},{id:'parcial',l:'Parcial',w:0.20,b:false},{id:'final',l:'Final',w:0.20,b:false}];
+      var _0x4d = "upsjb_sys_bin_v14", _0x5e = {a:'Ciclo I',d:{}}, _0x6f = {c:null,e:null};
+      function _0x7f2b(i){if(!i||i.value==='')return;var v=parseFloat(i.value);i.value=isNaN(v)?'':Math.min(20,Math.max(0,v))}
+      window._0x7f2b = _0x7f2b;
+      function _0x8a1b(x){return Math.round(x)}
+      function _0x9b2c(x){return Math.round(x*2)/2}
+      function _0x1c3d(t){return t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]/g," ").replace(/\s+/g," ").trim()}
+      function _0x2d4e(a){if(!a||isNaN(a)||a===0)return'--';if(a>=17.5)return'Top Facultad';if(a>=16.5)return'Décimo Superior';if(a>=15.0)return'Quinto Superior';if(a>=13.75)return'Tercio Superior';return'Regular'}
+      function _0x3e5f(){
+        var raw=localStorage.getItem(_0x4d);
+        if(raw){try{_0x5e=JSON.parse(raw)}catch(e){_0x5e={a:'Ciclo I',d:{}}}}
+        _0x1a.forEach(function(k){
+          var off=_0x2b[k];
+          if(!_0x5e.d[k]||_0x5e.d[k].length!==off.length){
+            _0x5e.d[k]=off.map(function(item,idx){return{i:k.replace(/[^a-zA-Z0-9]/g,'_')+'_'+idx,n:item[0],c:item[1],g:{pc1:'',pc2:'',pc3:'',pc4:'',parcial:'',final:''},s:{pc1:null,pc2:null,pc3:null,pc4:null}}});
+          }
+        });
+        localStorage.setItem(_0x4d,JSON.stringify(_0x5e));
+      }
+      function _0x4f6a(){localStorage.setItem(_0x4d,JSON.stringify(_0x5e))}
+      function _0x5a7b(c){
+        var ac=0,ew=0,rw=0,mi=[];
+        _0x3c.forEach(function(ev){var v=c.g[ev.id];if(v!==''&&v!==null&&!isNaN(v)){ac+=parseFloat(v)*ev.w;ew+=ev.w}else{rw+=ev.w;mi.push(ev)}});
+        var T=10.5,nd=T-ac,pj={},rf=_0x8a1b(ac),sc='st-warn',ms='';
+        if(mi.length===0){sc=(rf>=11)?'st-pass':'st-fail';ms=(rf>=11)?'Curso aprobado':'Curso desaprobado';return{ac:ac,ew:ew,rf:rf,sc:sc,ms:ms,pj:pj}}
+        if(nd<=0){sc='st-pass';ms='Aprobado con 00';mi.forEach(function(e){pj[e.id]=0});return{ac:ac,ew:ew,rf:rf,sc:sc,ms:ms,pj:pj}}
+        if(nd>(rw*20)){sc='st-fail';ms='Inalcanzable';mi.forEach(function(e){pj[e.id]=20});return{ac:ac,ew:ew,rf:rf,sc:sc,ms:ms,pj:pj}}
+        var rFac={pc1:1.15,pc2:1.05,pc3:0.95,pc4:0.88,parcial:0.95,final:0.82},sFac=0;
+        mi.forEach(function(e){sFac+=(rFac[e.id]||1.0)*e.w});
+        var bSc=nd/sFac,pSum=0;
+        mi.forEach(function(e){var raw=bSc*(rFac[e.id]||1.0),ds=_0x9b2c(raw);ds=Math.min(20,Math.max(0,ds));pj[e.id]=ds;pSum+=ds*e.w});
+        var pO=['parcial','pc1','pc2','pc3','pc4','final'],lp1=0;
+        while((ac+pSum)<(T-0.001)&&lp1<40){
+          var inc=false;
+          for(var x=0;x<pO.length;x++){
+            var k=pO[x];
+            if(pj[k]!==undefined&&pj[k]<20){
+              var tE=mi.find(function(m){return m.id===k});
+              pj[k]=Math.min(20,pj[k]+0.5);pSum+=0.5*tE.w;inc=true;
+              if((ac+pSum)>=(T-0.001))break;
+            }
+          }
+          lp1++;if(!inc)break;
+        }
+        var rO=['final','pc4','pc3','pc2','pc1','parcial'],lp2=0;
+        while((ac+pSum)>=(T+0.15)&&lp2<20){
+          var red=false;
+          for(var y=0;y<rO.length;y++){
+            var rk=rO[y];
+            if(pj[rk]!==undefined&&pj[rk]>0){
+              var rE=mi.find(function(m){return m.id===rk});
+              if((ac+pSum-(0.5*rE.w))>=T){pj[rk]-=0.5;pSum-=0.5*rE.w;red=true;break}
+            }
+          }
+          lp2++;if(!red)break;
+        }
+        var rq=nd/rw,dR=_0x9b2c(rq);
+        sc=(rq<=11)?'st-pass':(rq<=15)?'st-warn':'st-fail';
+        ms='Promediar ~'+dR.toFixed(1)+' en lo pendiente';
+        return{ac:ac,ew:ew,rf:rf,sc:sc,ms:ms,pj:pj};
+      }
+      function _0x6b8c(){
+        var cur=_0x5e.d[_0x5e.a]||[],cSm=0,cCr=0;
+        cur.forEach(function(c){var an=_0x5a7b(c);if(an.ew>0){cSm+=_0x8a1b(an.ac/an.ew)*c.c;cCr+=c.c}});
+        var k1=document.getElementById('kpiCurrentAvg'),k2=document.getElementById('kpiCurrentMerit');
+        if(cCr>0){var av=cSm/cCr;k1.textContent=av.toFixed(2);k2.textContent=_0x2d4e(av)}else{k1.textContent='--';k2.textContent='--'}
+        var tSm=0,tCr=0;
+        _0x1a.forEach(function(k){var l=_0x5e.d[k]||[];l.forEach(function(c){var an=_0x5a7b(c);if(an.ew>0){tSm+=_0x8a1b(an.ac/an.ew)*c.c;tCr+=c.c}})});
+        var h1=document.getElementById('kpiHistAvg'),h2=document.getElementById('kpiHistMerit');
+        if(tCr>0){var hav=tSm/tCr;h1.textContent=hav.toFixed(2);h2.textContent=_0x2d4e(hav)}else{h1.textContent='--';h2.textContent='--'}
+      }
+      function _0x7c9d(){
+        var sel=document.getElementById('cycleSelect');sel.innerHTML='';
+        _0x1a.forEach(function(k){var op=document.createElement('option');op.value=k;op.textContent=k;if(k===_0x5e.a)op.selected=true;sel.appendChild(op)});
+      }
+      function _0x8d0e(){
+        var box=document.getElementById('coursesList');box.innerHTML='';
+        var cs=_0x5e.d[_0x5e.a]||[];
+        cs.forEach(function(c){
+          var an=_0x5a7b(c),art=document.createElement('article');art.className='course-card';art.setAttribute('data-course-id',c.i);
+          var cells=_0x3c.map(function(ev){
+            var val=c.g[ev.id],hV=(val!==''&&val!==null),sub=c.s&&c.s[ev.id],isD=sub&&sub.has,hTx='',isP=false;
+            if(!hV&&an.pj[ev.id]!==undefined){hTx='Meta: '+an.pj[ev.id].toFixed(1);isP=true}else if(hV){hTx=isD?'Desglosado':'Directa'}
+            var bPl=ev.b?('<button type="button" class="btn-plus '+(isD?'has-sub':'')+'" onclick="_0x1e3a(\''+c.i+'\',\''+ev.id+'\')">+</button>'):'<span></span>';
+            return '<div class="eval-cell '+(!ev.b?'is-exam':'')+'"><div class="cell-top"><span class="cell-label">'+ev.l+'</span>'+bPl+'</div><span class="cell-weight">'+Math.round(ev.w*100)+'%</span><input type="number" min="0" max="20" step="0.5" placeholder="--" value="'+(hV?val:'')+'" class="'+(isD?'derived':'')+'" oninput="_0x7f2b(this)" onchange="_0x2f4b(\''+c.i+'\',\''+ev.id+'\',this.value)"><span class="cell-hint '+(isP?'projected':'')+'">'+hTx+'</span></div>';
+          }).join('');
+          var crR=(an.ew>0)?_0x8a1b(an.ac/an.ew):'--';
+          art.innerHTML='<div class="course-head"><h2>'+c.n+'</h2><span class="cr-tag '+(c.c>=5?'heavy':'')+'">'+c.c+' cr.</span></div><div class="eval-strip">'+cells+'</div><div class="course-foot"><div class="score-stats"><div class="stat-unit"><span class="stat-tag">Puntos</span><span class="stat-num">'+an.ac.toFixed(2)+'</span></div><div class="stat-unit"><span class="stat-tag">Promedio</span><span class="stat-num">'+((an.ew>0)?(an.ac/an.ew).toFixed(2):'--')+'<span class="round-pill">'+crR+'</span></span></div></div><div class="prediction-indicator '+an.sc+'">'+an.ms+'</div></div>';
+          box.appendChild(art);
+        });
+        _0x6b8c();
+      }
+      function _0x0f4a(){
+        var el=document.getElementById('rawPasteInput'),txt=el.value.trim();if(!txt){alert('Pega primero el texto de la intranet.');return}
+        var hUp=txt.slice(0,300).toUpperCase(),dRom=null;
+        if(/\b(III)\b/.test(hUp)||hUp.includes('MEDICINA III')||hUp.includes('HUMANO III'))dRom='III';
+        else if(/\b(II)\b/.test(hUp)||hUp.includes('MEDICINA II')||hUp.includes('HUMANO II'))dRom='II';
+        else if(/\b(I)\b/.test(hUp)||hUp.includes('MEDICINA I')||hUp.includes('HUMANO I'))dRom='I';
+        var nIn=_0x1c3d(txt.slice(0,250)),bC=null,bK=null,bSc=-1;
+        _0x1a.forEach(function(k){
+          _0x2b[k].forEach(function(c){
+            var cRm=c[0].trim().match(/\b(I|II|III)$/);if(cRm&&dRom&&cRm[1]!==dRom)return;
+            var wds=_0x1c3d(c[0]).split(' ').filter(function(w){return w.length>2}),h=0;
+            wds.forEach(function(w){if(nIn.includes(w))h++});
+            var sc=h/wds.length;if(sc>bSc&&sc>=0.4){bSc=sc;bC=c[0];bK=k}
+          });
+        });
+        if(!bC){alert('No se reconoció el curso en la malla curricular.');return}
+        var nG={};
+        for(var i=1;i<=4;i++){
+          var rx=new RegExp('(?:PC\\s*'+i+'|CALIFICADA\\s*'+i+')[^\\d]*(\\d{1,2}\\.\\d{2})','i'),m=txt.match(rx);
+          if(m&&m[1]){var v=parseFloat(m[1]);if(!isNaN(v)&&v>=0&&v<=20)nG['pc'+i]=v}
+        }
+        var ep=txt.match(/(?:EP|EXAMEN\s*PARCIAL)[^\d]*(\d{1,2}\.\d{2})/i);if(ep&&ep[1]){var vp=parseFloat(ep[1]);if(!isNaN(vp)&&vp>=0&&vp<=20)nG['parcial']=vp}
+        var ef=txt.match(/(?:EF|EXAMEN\s*FINAL)[^\d]*(\d{1,2}\.\d{2})/i);if(ef&&ef[1]){var vf=parseFloat(ef[1]);if(!isNaN(vf)&&vf>=0&&vf<=20)nG['final']=vf}
+        _0x5e.a=bK;var tar=_0x5e.d[bK].find(function(c){return c.n===bC});
+        if(tar){
+          var cnt=0;Object.keys(nG).forEach(function(k){tar.g[k]=nG[k];if(tar.s)tar.s[k]=null;cnt++});
+          _0x4f6a();_0x7c9d();_0x8d0e();el.value='';
+          setTimeout(function(){var cd=document.querySelector('[data-course-id="'+tar.i+'"]');if(cd){cd.classList.add('flash-success');cd.scrollIntoView({behavior:'smooth',block:'center'})}},100);
+        }
+      }
+      window._0x0f4a = _0x0f4a;
+      function _0x1e3a(cId,eId){
+        _0x6f={c:cId,e:eId};var cs=_0x5e.d[_0x5e.a]||[],cur=cs.find(function(c){return c.i===cId}),ev=_0x3c.find(function(e){return e.id===eId});
+        document.getElementById('modalCourseTitle').textContent=cur.n+' ('+cur.c+' cr.)';document.getElementById('modalEvalTitle').textContent=ev.l+' ('+Math.round(ev.w*100)+'%)';
+        var sub=(cur.s&&cur.s[eId])||{e1:'',e2:'',a1:'',a2:''};
+        document.getElementById('subE1').value=sub.e1||'';document.getElementById('subE2').value=sub.e2||'';document.getElementById('subA1').value=sub.a1||'';document.getElementById('subA2').value=sub.a2||'';
+        _0x4a2c();document.getElementById('subgradeModal').classList.add('is-open');
+      }
+      window._0x1e3a = _0x1e3a;
+      function _0x9d7a(){document.getElementById('subgradeModal').classList.remove('is-open')}
+      window._0x9d7a = _0x9d7a;
+      function _0x3b1a(){
+        var a=['subE1','subE2','subA1','subA2'].map(function(id){return document.getElementById(id).value.trim()}),v=[];
+        a.forEach(function(x){if(x!==''&&!isNaN(parseFloat(x)))v.push(Math.min(20,Math.max(0,parseFloat(x))))});
+        return{v:v,e1:a[0],e2:a[1],a1:a[2],a2:a[3]};
+      }
+      function _0x4a2c(){var r=_0x3b1a(),d=document.getElementById('modalCalculatedAvg');if(r.v.length===0){d.textContent='--'}else{var s=r.v.reduce(function(p,c){return p+c},0);d.textContent=(s/r.v.length).toFixed(2)}}
+      ['subE1','subE2','subA1','subA2'].forEach(function(id){document.getElementById(id).addEventListener('input',_0x4a2c)});
+      function _0x6d4b(){
+        var cur=_0x5e.d[_0x5e.a].find(function(c){return c.i===_0x6f.c});if(!cur)return;
+        var r=_0x3b1a();if(!cur.s)cur.s={};
+        if(r.v.length>0){var av=r.v.reduce(function(p,c){return p+c},0)/r.v.length;cur.s[_0x6f.e]={e1:r.e1,e2:r.e2,a1:r.a1,a2:r.a2,has:true};cur.g[_0x6f.e]=_0x9b2c(av)}else{cur.s[_0x6f.e]=null}
+        _0x4f6a();_0x9d7a();_0x8d0e();
+      }
+      window._0x6d4b = _0x6d4b;
+      function _0x3f9e(){
+        var cur=_0x5e.d[_0x5e.a].find(function(c){return c.i===_0x6f.c});if(!cur)return;
+        if(cur.s)cur.s[_0x6f.e]=null;cur.g[_0x6f.e]='';_0x4f6a();_0x9d7a();_0x8d0e();
+      }
+      window._0x3f9e = _0x3f9e;
+      function _0x2f4b(cId,eId,val){
+        var cur=_0x5e.d[_0x5e.a].find(function(c){return c.i===cId});if(!cur)return;
+        if(val.trim()===''){cur.g[eId]='';if(cur.s)cur.s[eId]=null}else{var n=parseFloat(val);cur.g[eId]=isNaN(n)?'':Math.min(20,Math.max(0,n));if(cur.s)cur.s[eId]=null}
+        _0x4f6a();_0x8d0e();
+      }
+      window._0x2f4b = _0x2f4b;
+      document.getElementById('cycleSelect').addEventListener('change',function(e){_0x5e.a=e.target.value;_0x4f6a();_0x8d0e()});
+      document.addEventListener('DOMContentLoaded',function(){_0x3e5f();_0x7c9d();_0x8d0e()});
+    })();
+  </script>
 </body>
 </html>
