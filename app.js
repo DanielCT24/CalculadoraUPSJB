@@ -110,7 +110,7 @@ const EVAL_SPECS = [
   { id: 'final', label: 'Final', weight: 0.20, isBreakdownAllowed: false }
 ];
 
-const LOCAL_STORAGE_KEY = 'upsjb_text_parser_v12';
+const LOCAL_STORAGE_KEY = 'upsjb_text_parser_v13';
 
 let state = {
   activeCycle: 'Ciclo I',
@@ -133,6 +133,11 @@ function getMeritRank(average) {
 
 function roundGrade(val) {
   return Math.round(val);
+}
+
+// Redondeo de escala a múltiplos de 0.5 (.0 o .5)
+function roundToHalfStep(num) {
+  return Math.round(num * 2) / 2;
 }
 
 window.validateScale = function(input) {
@@ -185,9 +190,6 @@ function saveState() {
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state));
 }
 
-// ============================================================================
-// PARSER INTELIGENTE DE TEXTO CRUDO COPIADO DE INTRANET
-// ============================================================================
 function cleanText(text) {
   return text.toLowerCase()
     .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
@@ -196,6 +198,9 @@ function cleanText(text) {
     .trim();
 }
 
+// ============================================================================
+// PARSER DE TEXTO COPIADO DE INTRANET
+// ============================================================================
 window.processPastedText = function() {
   const rawInput = document.getElementById('rawPasteInput');
   const text = rawInput.value.trim();
@@ -205,7 +210,6 @@ window.processPastedText = function() {
     return;
   }
 
-  // 1. Detección de números romanos (I, II, III) en el encabezado
   const headerUpper = text.slice(0, 300).toUpperCase();
   let detectedRoman = null;
   if (/\b(III)\b/.test(headerUpper) || headerUpper.includes('MEDICINA III') || headerUpper.includes('HUMANO III')) {
@@ -216,7 +220,6 @@ window.processPastedText = function() {
     detectedRoman = 'I';
   }
 
-  // 2. Asociar el curso en la malla curricular
   const normInput = cleanText(text.slice(0, 250));
   let bestCourse = null;
   let bestCycle = null;
@@ -249,12 +252,9 @@ window.processPastedText = function() {
     return;
   }
 
-  // 3. Extracción de notas decimales con formato xx.xx
   const grades = {};
 
-  // Busca el patrón de PC y captura exclusivamente el número decimal XX.XX
   for (let i = 1; i <= 4; i++) {
-    // Coincide con PC1 ... 14.00 o PRÁCTICA CALIFICADA 114.00
     const pcRegex = new RegExp(`(?:PC\\s*${i}|CALIFICADA\\s*${i})[^\\d]*(\\d{1,2}\\.\\d{2})`, 'i');
     const match = text.match(pcRegex);
     if (match && match[1]) {
@@ -265,7 +265,6 @@ window.processPastedText = function() {
     }
   }
 
-  // Examen Parcial (EP EXAMEN PARCIAL 14.40)
   const epMatch = text.match(/(?:EP|EXAMEN\s*PARCIAL)[^\d]*(\d{1,2}\.\d{2})/i);
   if (epMatch && epMatch[1]) {
     const val = parseFloat(epMatch[1]);
@@ -274,7 +273,6 @@ window.processPastedText = function() {
     }
   }
 
-  // Examen Final (EF EXAMEN FINAL XX.XX)
   const efMatch = text.match(/(?:EF|EXAMEN\s*FINAL)[^\d]*(\d{1,2}\.\d{2})/i);
   if (efMatch && efMatch[1]) {
     const val = parseFloat(efMatch[1]);
@@ -283,7 +281,6 @@ window.processPastedText = function() {
     }
   }
 
-  // 4. Inserción directa en el estado del curso
   state.activeCycle = bestCycle;
   const courses = state.cycleData[bestCycle];
   const targetCourse = courses.find(c => c.name === bestCourse.name);
@@ -309,14 +306,12 @@ window.processPastedText = function() {
         cardElem.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     }, 100);
-
-    alert(`✓ ${bestCourse.name} (${bestCycle}): Se importaron ${filledCount} evaluaciones correctamente.`);
   }
 };
 
-// ==========================================
-// PREDICCIÓN Y CÁLCULOS
-// ==========================================
+// ============================================================================
+// ALGORITMO DE PREDICCIÓN CON VALORES .0 Y .5 PARA OBTENER EXACTAMENTE >= 10.5
+// ============================================================================
 function calculatePredictions(course) {
   let accumulated = 0;
   let evaluatedWeight = 0;
@@ -334,14 +329,15 @@ function calculatePredictions(course) {
     }
   });
 
-  const target = 10.5;
-  const pointsNeeded = target - accumulated;
+  const TARGET = 10.5; // Nota mínima aprobatoria
+  const pointsNeeded = TARGET - accumulated;
   const projections = {};
   const roundedFinal = roundGrade(accumulated);
 
   let statusClass = 'st-warn';
   let message = '';
 
+  // 1. Curso cerrado
   if (missing.length === 0) {
     if (roundedFinal >= 11) {
       statusClass = 'st-pass';
@@ -353,6 +349,7 @@ function calculatePredictions(course) {
     return { accumulated, evaluatedWeight, roundedFinal, statusClass, message, projections };
   }
 
+  // 2. Ya está aprobado con lo que tiene
   if (pointsNeeded <= 0) {
     statusClass = 'st-pass';
     message = 'Aprobado con 00';
@@ -360,6 +357,7 @@ function calculatePredictions(course) {
     return { accumulated, evaluatedWeight, roundedFinal, statusClass, message, projections };
   }
 
+  // 3. Imposible
   if (pointsNeeded > (remainingWeight * 20)) {
     statusClass = 'st-fail';
     message = 'Inalcanzable';
@@ -367,13 +365,14 @@ function calculatePredictions(course) {
     return { accumulated, evaluatedWeight, roundedFinal, statusClass, message, projections };
   }
 
+  // Distribución estratégica de dificultad
   const relativeFactors = {
     pc1: 1.15,
     pc2: 1.05,
     pc3: 0.95,
     pc4: 0.88,
-    parcial: 0.95,
-    final: 0.82
+    parcial: 0.95, // Parcial prioritario
+    final: 0.82    // Lo mínimo en el Final
   };
 
   let sumFactor = 0;
@@ -383,23 +382,69 @@ function calculatePredictions(course) {
 
   const baseScale = pointsNeeded / sumFactor;
 
+  // Paso 1: Generar notas redondeadas estrictamente a pasos de 0.5 (.0 o .5)
+  let predictedSum = 0;
   missing.forEach(ev => {
-    let tentative = baseScale * (relativeFactors[ev.id] || 1.0);
-    tentative = Math.round(tentative * 10) / 10;
-    tentative = Math.min(20, Math.max(0, tentative));
-    projections[ev.id] = tentative;
+    let rawTarget = baseScale * (relativeFactors[ev.id] || 1.0);
+    let discrete = roundToHalfStep(rawTarget);
+    discrete = Math.min(20, Math.max(0, discrete));
+    projections[ev.id] = discrete;
+    predictedSum += discrete * ev.weight;
   });
 
+  // Paso 2: Si la suma de las notas redondeadas queda por debajo de los 10.5,
+  // incrementamos de a 0.5 puntos en la evaluación que más convenga
+  // (prioridad: Parcial > PC1 > PC2 > PC3 > PC4 > Final)
+  const priorityOrder = ['parcial', 'pc1', 'pc2', 'pc3', 'pc4', 'final'];
+  let safetyLoop = 0;
+
+  while ((accumulated + predictedSum) < (TARGET - 0.001) && safetyLoop < 40) {
+    let incremented = false;
+    for (let evalKey of priorityOrder) {
+      if (projections[evalKey] !== undefined && projections[evalKey] < 20) {
+        const ev = missing.find(m => m.id === evalKey);
+        projections[evalKey] = Math.min(20, projections[evalKey] + 0.5);
+        predictedSum += 0.5 * ev.weight;
+        incremented = true;
+        if ((accumulated + predictedSum) >= (TARGET - 0.001)) break;
+      }
+    }
+    safetyLoop++;
+    if (!incremented) break;
+  }
+
+  // Si quedó con un exceso notable, recortar de a 0.5 del Final primero
+  let reduceLoop = 0;
+  const reversePriority = ['final', 'pc4', 'pc3', 'pc2', 'pc1', 'parcial'];
+  while ((accumulated + predictedSum) >= TARGET + 0.15 && reduceLoop < 20) {
+    let reduced = false;
+    for (let evalKey of reversePriority) {
+      if (projections[evalKey] !== undefined && projections[evalKey] > 0) {
+        const ev = missing.find(m => m.id === evalKey);
+        if ((accumulated + predictedSum - (0.5 * ev.weight)) >= TARGET) {
+          projections[evalKey] -= 0.5;
+          predictedSum -= 0.5 * ev.weight;
+          reduced = true;
+          break;
+        }
+      }
+    }
+    reduceLoop++;
+    if (!reduced) break;
+  }
+
   const rawReq = pointsNeeded / remainingWeight;
+  const discreteReq = roundToHalfStep(rawReq);
+
   if (rawReq <= 11) {
     statusClass = 'st-pass';
-    message = `Promediar ~${rawReq.toFixed(1)} en lo pendiente`;
+    message = `Promediar ~${discreteReq.toFixed(1)} en lo pendiente`;
   } else if (rawReq <= 15) {
     statusClass = 'st-warn';
-    message = `Promediar ~${rawReq.toFixed(1)} en lo pendiente`;
+    message = `Promediar ~${discreteReq.toFixed(1)} en lo pendiente`;
   } else {
     statusClass = 'st-fail';
-    message = `Requiere ~${rawReq.toFixed(1)} en lo pendiente`;
+    message = `Requiere ~${discreteReq.toFixed(1)} en lo pendiente`;
   }
 
   return { accumulated, evaluatedWeight, roundedFinal, statusClass, message, projections };
@@ -502,7 +547,7 @@ function renderCourses() {
       let isProjection = false;
 
       if (!hasVal && analysis.projections[ev.id] !== undefined) {
-        hintText = `Meta: ${analysis.projections[ev.id]}`;
+        hintText = `Meta: ${analysis.projections[ev.id].toFixed(1)}`;
         isProjection = true;
       } else if (hasVal) {
         hintText = isCalculated ? 'Desglosado' : 'Directa';
@@ -528,7 +573,7 @@ function renderCourses() {
             type="number" 
             min="0" 
             max="20" 
-            step="0.1" 
+            step="0.5" 
             placeholder="--"
             value="${hasVal ? val : ''}"
             class="${isCalculated ? 'derived' : ''}"
